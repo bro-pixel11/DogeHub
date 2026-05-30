@@ -1,5 +1,8 @@
-game.StarterGui:SetCore("SendNotification", {
-    Title = "DogeHub",
-    Text = "Main UI Loaded",
-    Duration = 5
-})
+local lib =
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Lib-18698"))()
+
+lib.makelib("DogeHub")
+
+local home = lib.maketab("Home")
+
+lib.makelabel("DogeHub Loaded", home)
