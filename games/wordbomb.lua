@@ -27,26 +27,31 @@ print("[WORDBOMB] Dictionary loaded: " .. #words .. " words")
 
 local categoryCache = {}
 
-local smoothFlowWords = {
-    "SUPERCALIFRAGILISTICEXPIALIDOCIOUS",
-    "FLOCCINAUCINIHILIPILIFICATION",
-    "PSEUDOPSEUDOHYPOPARATHYROIDISM",
-    "SPHENOPALATINEGANGLIONEURALGIA",
-    "PNEUMONOULTRAMICROSCOPICSILICOVOLCANOCONIOSIS",
-    "HONORIFICABILITUDINITATIBUS",
-    "ANTIDISESTABLISHMENTARIANISM",
-    "INCOMPREHENSIBILITY",
-    "SESQUIPEDALIAN",
-    "INTERNATIONALIZATION",
-    "UNCHARACTERISTICALLY",
-    "UNCONSTITUTIONALLY",
-    "UNPREPOSSESSINGLY",
-    "INDEFATIGABLY",
-    "SUPERCILIOUSLY",
-    "OBSEQUIOUSNESS",
-    "PERSPICACIOUSLY",
-    "MAGNANIMOUSLY"
+-- Load LongestWord list
+local longestWordsRaw = game:HttpGet("https://raw.githubusercontent.com/FiosoCat/Fioso-Meta/main/games/LongestWord.lua")
+local longestWordsList = loadstring(longestWordsRaw)()
+
+-- Combine all smooth flow words
+local smoothFlowWords = {}
+
+-- Add from LongestWord.lua
+for _, word in ipairs(longestWordsList) do
+    table.insert(smoothFlowWords, word)
+end
+
+-- Add our custom ones
+local customSmoothFlow = {
+    "WHATCHAMACALLIT",
+    "THINGAMABOB",
+    "THINGAMAJIG",
 }
+
+for _, word in ipairs(customSmoothFlow) do
+    table.insert(smoothFlowWords, word)
+end
+
+print("[WORDBOMB] Loaded " .. #smoothFlowWords .. " smooth flow words")
+
 
 local awkwardReadableWords = {
     "WHATCHAMACALLIT",
