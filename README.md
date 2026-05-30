@@ -19,3 +19,13 @@ Multi-game Roblox hub made by bro-pixel11.
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/bro-pixel11/DogeHub/main/loader.lua"))()
+## Structure 
+DogeHub/
+├── loader.lua
+├── games/
+│   ├── wordbomb.lua
+│   └── universal.lua
+## Status 
+Currently in development.
+## Credits 
+Created by bro-pixel11 (DogeVoid)
