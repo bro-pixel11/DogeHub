@@ -1,10 +1,9 @@
-local lib =
+_G.DogeLib =
 loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Lib-18698"))()
 
-lib.makelib("DogeHub")
+_G.DogeLib.makelib("DogeHub")
 
-local home = lib.maketab("Home")
-lib.makelabel("DogeHub Loaded", home)
+_G.HomeTab = _G.DogeLib.maketab("Home")
+_G.WordBombTab = _G.DogeLib.maketab("WordBomb")
 
-local wordbomb = lib.maketab("WordBomb")
-lib.makelabel("WordBomb Module Loaded", wordbomb)
+_G.DogeLib.makelabel("DogeHub Loaded", _G.HomeTab)
