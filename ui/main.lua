@@ -1,0 +1,1 @@
+print("DogeHub UI loaded")
