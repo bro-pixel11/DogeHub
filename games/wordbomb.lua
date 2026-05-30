@@ -6,7 +6,6 @@
 
 print("[WORDBOMB] Loading...")
 
--- ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЙ HUB
 local lib = _G.DogeLib
 local tab = _G.WordBombTab
 
@@ -14,52 +13,36 @@ lib.makelabel("Loading Fioso Dictionary...", tab)
 
 print("[WORDBOMB] Fetching dictionary...")
 
-local ALLWORDS =
-game:HttpGet("https://raw.githubusercontent.com/bro-pixel11/dogevoid-dictionary/main/ALLWORDSFILE.txt")
+local ALLWORDS = game:HttpGet("https://raw.githubusercontent.com/bro-pixel11/dogevoid-dictionary/main/ALLWORDSFILE.txt")
 
 lib.makelabel("Dictionary Loaded!", tab)
 
 local words = string.split(ALLWORDS, "\n")
-
 print("[WORDBOMB] Dictionary loaded: " .. #words .. " words")
+
+-- === LOAD LONGEST WORDS ===
+
+print("[WORDBOMB] Loading LongestWord list...")
+
+local longestWordsRaw = game:HttpGet("https://raw.githubusercontent.com/FiosoCat/Fioso-Meta/main/games/LongestWord.lua")
+local longestWordsList = loadstring(longestWordsRaw)()
+
+print("[WORDBOMB] Loaded " .. #longestWordsList .. " longest words")
 
 -- === BUILD CATEGORY CACHE ===
 
 local categoryCache = {}
 
--- Load LongestWord list
-local longestWordsRaw = game:HttpGet("https://raw.githubusercontent.com/FiosoCat/Fioso-Meta/main/games/LongestWord.lua")
-local longestWordsList = loadstring(longestWordsRaw)()
-
--- Combine all smooth flow words
-local smoothFlowWords = {}
-
--- Add from LongestWord.lua
+-- Add longest words as smooth flow
 for _, word in ipairs(longestWordsList) do
-    table.insert(smoothFlowWords, word)
+    if word and #word > 0 then
+        categoryCache[word] = "smoothFlow"
+    end
 end
 
--- Add our custom ones
-local customSmoothFlow = {
-    "WHATCHAMACALLIT",
-    "THINGAMABOB",
-    "THINGAMAJIG",
-}
+print("[WORDBOMB] Category cache built with " .. table.getn(categoryCache) .. " words")
 
-for _, word in ipairs(customSmoothFlow) do
-    table.insert(smoothFlowWords, word)
-end
-
-print("[WORDBOMB] Loaded " .. #smoothFlowWords .. " smooth flow words")
-
-
-local awkwardReadableWords = {
-    "WHATCHAMACALLIT",
-    "THINGAMABOB",
-    "THINGAMAJIG",
-    "GOBBLEDYGOOK"
-}
-
+-- Medical words (separate, no duplicates with longest list)
 local medicalEndgameWords = {
     "KERATOCONJUNCTIVITIDES",
     "THROMBOPHLEBITIDES",
@@ -70,19 +53,11 @@ local medicalEndgameWords = {
     "IMMUNOELECTROPHORETICALLY"
 }
 
-for _, word in ipairs(smoothFlowWords) do
-    categoryCache[word] = "smoothFlow"
-end
-
-for _, word in ipairs(awkwardReadableWords) do
-    categoryCache[word] = "awkwardReadable"
-end
-
 for _, word in ipairs(medicalEndgameWords) do
     categoryCache[word] = "medicalEndgame"
 end
 
-print("[WORDBOMB] Category cache built")
+print("[WORDBOMB] Medical words added to cache")
 
 -- === CHUNK CATEGORIES ===
 
@@ -120,6 +95,8 @@ local lettercap = math.huge
 local enableFallback = true
 local numclose = .001
 
+print("[WORDBOMB] Creating UI elements...")
+
 -- === UI ELEMENTS ===
 
 lib.maketextbox("# To Pick", tab, function(num)
@@ -136,6 +113,8 @@ lib.maketoggle("Enable Fallback", tab, function(bool)
 end)
 
 local wordLabel = lib.makelabel("Word", tab)
+
+print("[WORDBOMB] UI elements created")
 
 -- === HELPER FUNCTIONS ===
 
@@ -166,7 +145,6 @@ local function selectWord(foundwords, chunkDiff)
     end
     
     local smoothPool = {}
-    local awkwardPool = {}
     local medicalPool = {}
     local neutralPool = {}
     
@@ -175,8 +153,6 @@ local function selectWord(foundwords, chunkDiff)
         
         if category == "smoothFlow" then
             table.insert(smoothPool, word)
-        elseif category == "awkwardReadable" then
-            table.insert(awkwardPool, word)
         elseif category == "medicalEndgame" then
             table.insert(medicalPool, word)
         else
@@ -200,8 +176,6 @@ local function selectWord(foundwords, chunkDiff)
         local rand = math.random(100)
         if rand <= 50 and #smoothPool > 0 then
             selected = smoothPool[math.random(1, #smoothPool)]
-        elseif rand <= 80 and #awkwardPool > 0 then
-            selected = awkwardPool[math.random(1, #awkwardPool)]
         elseif #neutralPool > 0 then
             selected = neutralPool[math.random(1, #neutralPool)]
         elseif #smoothPool > 0 then
@@ -212,8 +186,6 @@ local function selectWord(foundwords, chunkDiff)
         local rand = math.random(100)
         if rand <= 70 and #medicalPool > 0 then
             selected = medicalPool[math.random(1, #medicalPool)]
-        elseif rand <= 90 and #awkwardPool > 0 then
-            selected = awkwardPool[math.random(1, #awkwardPool)]
         elseif #neutralPool > 0 then
             selected = neutralPool[math.random(1, #neutralPool)]
         elseif #medicalPool > 0 then
