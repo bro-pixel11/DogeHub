@@ -1,1 +1,1 @@
-print("wordbomb loaded")
+print("WORD BOMB MODULE LOADED")
